@@ -18,36 +18,33 @@ For a simple demo of a Foilhat report from a Bash prompt, try this as root on a 
 
 ### General Use
 
-       --Simply call foilhat.sh in front of your existing script or command, like in these examples:
+Simply call foilhat.sh in front of your existing script or command, like in these examples:
 
-               /usr/local/sbin/foilhat.sh /usr/local/sbin/example_job1.sh
-
-               /usr/local/sbin/foilhat.sh /usr/local/sbin/somescript.sh
-
-               /usr/local/sbin/foilhat.sh /some/path/someperl.pl
-
-               /usr/local/sbin/foilhat.sh /some/path/custom_binary
-
-
-       --OR (though not recommended) if you find a situation that warrants it you could just run an arbitrary command as a job:
-
-               /full/path/to/foilhat.sh tar -czvpf foo.tgz bar
-
-               BUT be mindful of the lock with such "generic" commands (simply '/tmp/tar.foilhat.lck', in this case).
-               (i.e.: no concurrent instances of a generic command can be run; for better or worse)
+    /usr/local/sbin/foilhat.sh /usr/local/sbin/example_job1.sh
+    
+    /usr/local/sbin/foilhat.sh /usr/local/sbin/somescript.sh
+    
+    /usr/local/sbin/foilhat.sh /some/path/someperl.pl
+    
+    /usr/local/sbin/foilhat.sh /some/path/custom_binary
 
 
-       --however, you should NOT just run multiple commands in-line. For one it negates most of Foilhat's purpose, but also...
+OR (though not recommended) if you find a situation that warrants it you could just run an arbitrary command as a job:
 
-               Quoting multiple commands together will break the lock file generation and Foilhat will simply exit:
+    /full/path/to/foilhat.sh tar -czvpf foo.tgz bar
 
-                       ./foilhat.sh "touch foo; ls -la foo >&2; rm foo"
-
-               Dropping the quotes and escaping instead (although technically functional) is an abomination:
-
-                       ./foilhat.sh touch foo\; ls -la foo \>\&2\; rm foo
+BUT be mindful of the lock with such "generic" commands (simply '/tmp/tar.foilhat.lck', in this case).
+(i.e.: no concurrent instances of a generic command can be run; for better or worse)
 
 
+You should NOT just run multiple commands in-line. For one it negates most of Foilhat's purpose but also,
+quoting multiple commands together will break the lock file generation and Foilhat will simply exit:
+
+    ./foilhat.sh "touch foo; ls -la foo >&2; rm foo"
+
+Dropping the quotes and escaping instead (although technically functional) is an abomination:
+
+    ./foilhat.sh touch foo\; ls -la foo \>\&2\; rm foo
 
 ### Output Control and Logging
 Under normal operation Foilhat gives no output whatsoever (meaning cron will not email). This is so that whoever
