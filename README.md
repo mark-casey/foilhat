@@ -4,15 +4,14 @@ Foilhat, a semi-paranoid cronjob wrapper.
 
 Foilhat v2.0 offers three main features for handling cron jobs (along with a
 few minor extras). The main features are output control, local and remote
-mount checking, and PID/lock fle handling.  
+mount checking, and PID/lock fle handling. Foilhat aims to handle these
+relatively simple tasks in a low maintenace, centralized manner and has
+been found to add quite a bit of power, safety, and flexibility to everyday
+job handling.
 
-Foilhat aims to handle these relatively simple tasks in a low maintenace,
-centralized manner and has been found to add quite a bit of power, safety,
-and flexibility to everyday job handling.
-
-HOWEVER, under normal operation Foilhat gives NO OUTPUT whatsoever. You are
+**However, under normal operation Foilhat gives NO OUTPUT whatsoever. You are
 asking to lose data if you fail to AT LEAST read the "Output Control and Logging"
-section below before use.
+section below before use.**
 
 For a demo of a Foilhat report from a Bash prompt, try this as root on a test box:
 
