@@ -259,6 +259,22 @@ then
 fi
 ```
 
+- In the spirit of a planned [future feature] (https://github.com/mark-casey/foilhat/issues/7) you can exclude specific errors using process substitution if you know they will happen and are certain they are immaterial:
+
+    ```
+    ###########################################
+    ########## End pre-script config ##########
+    ###########################################
+    
+    set +e
+    
+    # This will fail with "ls: cannot access missing_file: No such file or directory"
+    # but Foilhat will never find out...
+    #
+    # Note that other error output would still come through...
+    ls missing_file 2> >(grep -v ls:\ cannot\ access\ missing_file)
+    ```
+
 Just be sure when doing something like this that you do not get in a loop where your
 job indefinitely prints responses to its own output. As before, you could also wrap a
 trick like this in an if statement based on whether mount_check is present, though
