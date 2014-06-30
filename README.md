@@ -9,9 +9,9 @@ least read the "Output Control and Logging" section below prior to use.
 
 Foilhat v2.0 offers three main features for handling cron jobs, along with a
 few minor extras. The main features are:
- - Output control
- - Local and remote mount point checking
- - PID/lock fle handling
+ -Output control
+ -Local and remote mount point checking
+ -PID/lock fle handling
 
 Foilhat aims to handle these relatively simple tasks in a low maintenace,
 centralized manner and has been found to add quite a bit of power, safety,
@@ -59,12 +59,12 @@ when cron finally does send an email with strange output, sometimes no one will 
 through the onslaught of 'Way to go job foo!'
 
 Instead, Foilhat starts a job and then accumulates its stdout and stderr within files
-in /tmp. When the job is done Foilhat simply discards these files unless any or all of
-the following things has occurred:
+in /tmp. When the job is done Foilhat simply discards these files unless any combination
+of the following things has occurred:
 
-    1. The job printed to its stderr
-    2. The job's exit status was non-zero
-    3. The job was coded to "request" Foilhat's report be written or appended to a log file.
+ -The job printed to its stderr
+ -The job's exit status was non-zero
+ -The job was coded to "request" Foilhat's report be written or appended to a log file.
 
 If either of the first or second events occur Foilhat will print a report (to its stdout)
 on all of the job's outputs (which will then end up in email). If the third event occurs
