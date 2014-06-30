@@ -105,7 +105,7 @@ echo 'LOGFILE="/var/log/logfile.log"' >> "${FH_OUTOPTS}"
 ########## End pre-script config ##########
 ###########################################
 
--start of your script-
+# start of your script #
 ```
 
 Once your job has completed, Foilhat will check for the existence of the FH_OUTOPTS
