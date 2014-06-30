@@ -9,13 +9,11 @@ relatively simple tasks in a low maintenace, centralized manner and has
 been found to add quite a bit of power, safety, and flexibility to everyday
 job handling.
 
-**However, under normal operation Foilhat gives NO OUTPUT whatsoever. You are
+### Warning/Disclaimer
+**Under normal operation Foilhat gives NO OUTPUT whatsoever. You are
 asking to lose data if you fail to AT LEAST read the "Output Control and Logging"
 section below before use.**
 
-For a demo of a Foilhat report from a Bash prompt, try this as root on a test box:
-
-       ./foilhat.sh grep foo file_that_is_not_there$$
 
 ### General Use
 
