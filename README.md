@@ -1,6 +1,6 @@
 Foilhat, a semi-paranoid cronjob wrapper.
 
-### Summary
+## Summary
 
 Foilhat v2.0 offers three main features for handling cron jobs, along with a
 few minor extras. The main features are:
@@ -12,13 +12,14 @@ Foilhat aims to handle these relatively simple tasks in a low maintenace,
 centralized manner and has been found to add quite a bit of power, safety,
 and flexibility to everyday job handling.
 
-### Warning/Disclaimer
+## Warning/Disclaimer
+
 **Under normal operation Foilhat gives NO OUTPUT whatsoever. You are
 asking to lose data if you fail to AT LEAST read the "Output Control and Logging"
 section below before use.**
 
 
-### General Use
+## General Use
 
 Call foilhat.sh in front of your existing script or command, like in these examples:
 
@@ -49,7 +50,8 @@ Dropping the quotes and escaping instead (although technically functional) is an
 
     ./foilhat.sh touch foo\; ls -la foo \>\&2\; rm foo
 
-### Output Control and Logging
+## Output Control and Logging
+
 Under normal operation Foilhat gives no output whatsoever (meaning cron will not email).
 This is so that whoever receives cron's emails does not get countless daily emails
 saying 'Job foo went great'. When this happens people may stop paying attention and
@@ -119,7 +121,8 @@ to allow different jobs to use different settings, and jobs can be moved around 
 needed without first adding and/or removing their logging preferences in a central
 config file(s).
 
-### Locking
+## Locking
+
 Foilhat will set a lock file for your job that is not likely to conflict with any
 lock file the job might be configured to set on its own. You do not have to enable,
 disable, or reconfigure the job's own default locking options to add Foilhat to
@@ -128,7 +131,8 @@ Foilhat's locking functions include several checks for sanity and should not be
 susceptible to race conditions (barring considerable and intentional tampering
 from root while the job is running).
 
-### Mount checking
+## Mount checking
+
 Foilhat exports a function to jobs that they can (optionally) use to make sure that
 the filesystems they expect to be mounted are really there. This is intended to
 prevent things like starting an empty mount point directory into your backups, or
@@ -184,7 +188,8 @@ here you must check the exit status and act accordingly*:
     
     -start work-
 
-### Other
+## Other
+
 There are some other minor beneficial things you can do that may not be
 immediately obvious.
 
