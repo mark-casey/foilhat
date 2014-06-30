@@ -64,7 +64,7 @@ of the following things has occurred:
 
 - The job printed to its stderr
 - The job's exit status was non-zero
-- The job was coded to "request" Foilhat's report be written or appended to a log file.
+- The job was coded to "request" Foilhat's report be written or appended to a log file
 
 If either of the first or second events occur Foilhat will print a report (to its stdout)
 on all of the job's outputs (which will then end up in email). If the third event occurs
