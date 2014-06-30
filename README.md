@@ -226,7 +226,7 @@ jobs wrapped by Foilhat have the benefit of making decisions based on what they'
     set +e
     rsync -av --delete data backup
     set -e
-
+    
     # Now look at STDOUT (via Foilhat's tmp filehandle) and generate
     # a warning if too many files have been deleted/moved.
     FH_OUT="/tmp/foilhat.out.${PPID}"
@@ -235,12 +235,12 @@ jobs wrapped by Foilhat have the benefit of making decisions based on what they'
     set +e
     DEL_COUNT=$( grep -c ^deleting "${FH_OUT}" )
     set -e
-
+    
     if [ ${DEL_COUNT} -gt ${WARN_AT} ]
     then
-    echo -e "\nWARNING: This job has deleted or moved "${DEL_COUNT}" \
-    files which is more than your threshold of "${WARN_AT}". The activity \
-    is shown below:\n" >&2
+        echo -e "\nWARNING: This job has deleted or moved "${DEL_COUNT}" \
+        files which is more than your threshold of "${WARN_AT}". The activity \
+        is shown below:\n" >&2
     fi
 
 Just be sure when doing something like this that you do not get in a loop where your
