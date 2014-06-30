@@ -88,25 +88,24 @@ foo.dat some time in the last 6 months." For this reason, Foilhat supports writi
 appending its job output report to a log file after every run, regardless of job
 outcome. To enable this option, simply execute something similar to the Bash code
 below before starting work in your script:
-
 ```
-    #!/bin/bash
-    
-    set -e
-    set -u
-    set -o pipefail
-    
-    ## Set output options for Foilhat to retrieve
-    FH_OUTOPTS=/tmp/foilhat.outopts.$PPID
-    echo 'OUT_TO_LOG="true"' > "${FH_OUTOPTS}"
-    echo 'OVERWRITE_LOG="false"' >> "${FH_OUTOPTS}"
-    echo 'LOGFILE="/var/log/logfile.log"' >> "${FH_OUTOPTS}"
-    
-    ###########################################
-    ########## End pre-script config ##########
-    ###########################################
-    
-    -start of your script-
+#!/bin/bash
+
+set -e
+set -u
+set -o pipefail
+
+## Set output options for Foilhat to retrieve
+FH_OUTOPTS=/tmp/foilhat.outopts.$PPID
+echo 'OUT_TO_LOG="true"' > "${FH_OUTOPTS}"
+echo 'OVERWRITE_LOG="false"' >> "${FH_OUTOPTS}"
+echo 'LOGFILE="/var/log/logfile.log"' >> "${FH_OUTOPTS}"
+
+###########################################
+########## End pre-script config ##########
+###########################################
+
+-start of your script-
 ```
 
 Once your job has completed, Foilhat will check for the existence of the FH_OUTOPTS
@@ -147,21 +146,21 @@ similar lines above your job's work section will check the mounts you specify
 and exit with an error if they are not present.
 
 ```
-    #!/bin/bash
-    
-    set -e
-    set -u
-    set -o pipefail
-    
-    REQ_MOUNTS[0]="-m /mnt/bkusb500g"
-    REQ_MOUNTS[1]="-m /mnt/data -h usr@host.domain.com -p 22 -k ~/.ssh/key"
-    mount_check "${REQ_MOUNTS[@]}"
-    
-    ###########################################
-    ########## End pre-script config ##########
-    ###########################################
-    
-    # start work #
+#!/bin/bash
+
+set -e
+set -u
+set -o pipefail
+
+REQ_MOUNTS[0]="-m /mnt/bkusb500g"
+REQ_MOUNTS[1]="-m /mnt/data -h usr@host.domain.com -p 22 -k ~/.ssh/key"
+mount_check "${REQ_MOUNTS[@]}"
+
+###########################################
+########## End pre-script config ##########
+###########################################
+
+# start work #
 ```
 
 Foilhat should export the mount_check function to the job's environment regardless
@@ -174,26 +173,26 @@ Here is a perl example. *Note that unlike the more integrated Bash example above
 here you must check the exit status and act accordingly*:
 
 ```
-    #!/usr/bin/perl
-    
-    use warnings;
-    use strict;
-    
-    my @req_mounts = ( '"-m /mnt/bkusb500g"',
-                       '"-m /mnt/data -h usr@host.domain.com -p 22 -k ~/.ssh/key.key"' );
-    
-    # (We pre-set FH_MOUNT_CHECK_CALLER, or any errors will just start
-    # with --bash-- instead of --/path/script.pl--)
-    if ( system("bash", "-c", "FH_MOUNT_CHECK_CALLER=$0; mount_check @req_mounts") != 0 )
-    {
-            exit 1;
-    }
-    
-    ###########################################
-    ########## End pre-script config ##########
-    ###########################################
-    
-    # start work #
+#!/usr/bin/perl
+
+use warnings;
+use strict;
+
+my @req_mounts = ( '"-m /mnt/bkusb500g"',
+                   '"-m /mnt/data -h usr@host.domain.com -p 22 -k ~/.ssh/key.key"' );
+
+# (We pre-set FH_MOUNT_CHECK_CALLER, or any errors will just start
+# with --bash-- instead of --/path/script.pl--)
+if ( system("bash", "-c", "FH_MOUNT_CHECK_CALLER=$0; mount_check @req_mounts") != 0 )
+{
+        exit 1;
+}
+
+###########################################
+########## End pre-script config ##########
+###########################################
+
+# start work #
 ```
 
 ## Other
@@ -206,25 +205,25 @@ immediately obvious.
    that checks whether the mount_check function is defined, such as:
 
 ```
-    if [ $(type -t mount_check) ]
-    then
-        ## Set mount points to look for
-        REQ_MOUNTS[0]="-m /mnt/bkusb500g"
-        REQ_MOUNTS[1]="-m /mnt/data -h usr@host.domain.com -p 22 -k ~/.ssh/key.key"
-        mount_check "${REQ_MOUNTS[@]}"
-        
-        ## Set output options for Foilhat to retrieve
-        FH_OUTOPTS=/tmp/foilhat.outopts.$PPID
-        echo 'OUT_TO_LOG="true"' > "${FH_OUTOPTS}"
-        echo 'OVERWRITE_LOG="false"' >> "${FH_OUTOPTS}"
-        echo 'LOGFILE="/var/log/logfile.log"' >> "${FH_OUTOPTS}"
-        
-        ###########################################
-        ########## End pre-script config ##########
-        ###########################################
-    fi
-    
-    # start work #
+if [ $(type -t mount_check) ]
+then
+    ## Set mount points to look for
+    REQ_MOUNTS[0]="-m /mnt/bkusb500g"
+    REQ_MOUNTS[1]="-m /mnt/data -h usr@host.domain.com -p 22 -k ~/.ssh/key.key"
+    mount_check "${REQ_MOUNTS[@]}"
+
+    ## Set output options for Foilhat to retrieve
+    FH_OUTOPTS=/tmp/foilhat.outopts.$PPID
+    echo 'OUT_TO_LOG="true"' > "${FH_OUTOPTS}"
+    echo 'OVERWRITE_LOG="false"' >> "${FH_OUTOPTS}"
+    echo 'LOGFILE="/var/log/logfile.log"' >> "${FH_OUTOPTS}"
+
+    ###########################################
+    ########## End pre-script config ##########
+    ###########################################
+fi
+
+# start work #
 ```
 
 2. Usually you can't monitor a cron job until its output is emailed to you (to tell you nothing is wrong, no doubt). Sometimes
@@ -235,29 +234,29 @@ you can find the PID of the parent Foilhat instance. ('tail -f /tmp/foilhat.out.
 jobs wrapped by Foilhat have the benefit of making decisions based on what they've output so far. For example:
 
 ```
-    ###########################################
-    ########## End pre-script config ##########
-    ###########################################
-    
-    set +e
-    rsync -av --delete data backup
-    set -e
-    
-    # Now look at STDOUT (via Foilhat's tmp filehandle) and generate
-    # a warning if too many files have been deleted/moved.
-    FH_OUT="/tmp/foilhat.out.${PPID}"
-    
-    WARN_AT=85
-    set +e
-    DEL_COUNT=$( grep -c ^deleting "${FH_OUT}" )
-    set -e
-    
-    if [ ${DEL_COUNT} -gt ${WARN_AT} ]
-    then
-        echo -e "\nWARNING: This job has deleted or moved "${DEL_COUNT}" \
-        files which is more than your threshold of "${WARN_AT}". The activity \
-        is shown below:\n" >&2
-    fi
+###########################################
+########## End pre-script config ##########
+###########################################
+
+set +e
+rsync -av --delete data backup
+set -e
+
+# Now look at STDOUT (via Foilhat's tmp filehandle) and generate
+# a warning if too many files have been deleted/moved.
+FH_OUT="/tmp/foilhat.out.${PPID}"
+
+WARN_AT=85
+set +e
+DEL_COUNT=$( grep -c ^deleting "${FH_OUT}" )
+set -e
+
+if [ ${DEL_COUNT} -gt ${WARN_AT} ]
+then
+    echo -e "\nWARNING: This job has deleted or moved "${DEL_COUNT}" \
+    files which is more than your threshold of "${WARN_AT}". The activity \
+    is shown below:\n" >&2
+fi
 ```
 
 Just be sure when doing something like this that you do not get in a loop where your
@@ -265,4 +264,3 @@ job indefinitely prints responses to its own output. As before, you could also w
 trick like this in an if statement based on whether mount_check is present, though
 there is likely a point at which the added code and clutter will cease to be worth the
 extra portability.
-
