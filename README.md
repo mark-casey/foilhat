@@ -284,9 +284,3 @@ immediately obvious.
     # Note that other error output would still come through...
     ls missing_file 2> >(grep -v ls:\ cannot\ access\ missing_file)
     ```
-
-Just be sure when doing something like this that you do not get in a loop where your
-job indefinitely prints responses to its own output. As before, you could also wrap a
-trick like this in an if statement based on whether mount_check is present, though
-there is likely a point at which the added code and clutter will cease to be worth the
-extra portability.
