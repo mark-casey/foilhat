@@ -226,12 +226,19 @@ immediately obvious.
     # start work #
     ```
 
-- Usually you can't monitor a cron job until its output is emailed to you (to tell you nothing is wrong, no doubt). Sometimes
-you just want to know how complete a job is or that it is still working. Jobs run by Foilhat can be monitored as long as
-you can find the PID of the parent Foilhat instance. ('tail -f /tmp/foilhat.out.1234' or 'tail -f /tmp/foilhat.err.1234')
+- Usually you can't monitor a cron job until its output is emailed to you
+  (to tell you nothing is wrong, no doubt). Sometimes you just want to know
+  how complete a job is or that it is still working. Jobs run by Foilhat
+  can be monitored as long as you can find the PID of the parent Foilhat
+  instance. ('tail -f /tmp/foilhat.out.1234' or 'tail -f /tmp/foilhat.err.1234')
 
-- Because Foilhat is accumulating the job's output for you and the job can programatically determine the PID of its parent,
-jobs wrapped by Foilhat have the benefit of making decisions based on what they've output so far. For example:
+- Because Foilhat is accumulating the job's output for you and the job can
+  programatically determine the PID of its parent, jobs wrapped by Foilhat
+  have the benefit of making decisions based on what they've output so far.
+  Just be sure when doing something like this that you do not get in a loop
+  where your job indefinitely prints responses to its own output. As before,
+  you could also wrap a trick like this in an if statement based on whether
+  mount_check is present.
 
     ```
     ###########################################
@@ -259,7 +266,10 @@ jobs wrapped by Foilhat have the benefit of making decisions based on what they'
     fi
     ```
 
-- In the spirit of a planned [future feature] (https://github.com/mark-casey/foilhat/issues/7) you can exclude specific errors using process substitution if you know they will happen and are certain they are immaterial:
+- In the spirit of a planned [future feature]
+  (https://github.com/mark-casey/foilhat/issues/7) you can exclude specific
+  errors using process substitution if you know they will happen and are
+  certain they are immaterial:
 
     ```
     ###########################################
