@@ -200,7 +200,7 @@ if ( system("bash", "-c", "FH_MOUNT_CHECK_CALLER=$0; mount_check @req_mounts") !
 There are some other minor beneficial things you can do that may not be
 immediately obvious.
 
-1. If you want to use Foilhat's mount checking and logging but still want a
+- If you want to use Foilhat's mount checking and logging but still want a
    job to be portable you can wrap the pre-script config in a conditional
    that checks whether the mount_check function is defined, such as:
 
@@ -226,11 +226,11 @@ fi
 # start work #
 ```
 
-2. Usually you can't monitor a cron job until its output is emailed to you (to tell you nothing is wrong, no doubt). Sometimes
+- Usually you can't monitor a cron job until its output is emailed to you (to tell you nothing is wrong, no doubt). Sometimes
 you just want to know how complete a job is or that it is still working. Jobs run by Foilhat can be monitored as long as
 you can find the PID of the parent Foilhat instance. ('tail -f /tmp/foilhat.out.1234' or 'tail -f /tmp/foilhat.err.1234')
 
-3. Because Foilhat is accumulating the job's output for you and the job can programatically determine the PID of its parent,
+- Because Foilhat is accumulating the job's output for you and the job can programatically determine the PID of its parent,
 jobs wrapped by Foilhat have the benefit of making decisions based on what they've output so far. For example:
 
 ```
