@@ -89,6 +89,7 @@ appending its job output report to a log file after every run, regardless of job
 outcome. To enable this option, simply execute something similar to the Bash code
 below before starting work in your script:
 
+```
     #!/bin/bash
     
     set -e
@@ -106,6 +107,7 @@ below before starting work in your script:
     ###########################################
     
     -start of your script-
+```
 
 Once your job has completed, Foilhat will check for the existence of the FH_OUTOPTS
 file and will act as requested if it is found. The file does not have to be output by
@@ -144,6 +146,7 @@ The example below shows checking both a local mount and a remote mount. Adding
 similar lines above your job's work section will check the mounts you specify
 and exit with an error if they are not present.
 
+```
     #!/bin/bash
     
     set -e
@@ -159,6 +162,7 @@ and exit with an error if they are not present.
     ###########################################
     
     # start work #
+```
 
 Foilhat should export the mount_check function to the job's environment regardless
 of language, similar to how the FH_OUTOPTS file can be set by any language. If
@@ -169,6 +173,7 @@ before starting work.
 Here is a perl example. *Note that unlike the more integrated Bash example above,
 here you must check the exit status and act accordingly*:
 
+```
     #!/usr/bin/perl
     
     use warnings;
@@ -189,7 +194,7 @@ here you must check the exit status and act accordingly*:
     ###########################################
     
     # start work #
-
+```
 
 ## Other
 
@@ -200,6 +205,7 @@ immediately obvious.
    job to be portable you can wrap the pre-script config in a conditional
    that checks whether the mount_check function is defined, such as:
 
+```
     if [ $(type -t mount_check) ]
     then
         ## Set mount points to look for
@@ -219,6 +225,7 @@ immediately obvious.
     fi
     
     # start work #
+```
 
 2. Usually you can't monitor a cron job until its output is emailed to you (to tell you nothing is wrong, no doubt). Sometimes
 you just want to know how complete a job is or that it is still working. Jobs run by Foilhat can be monitored as long as
@@ -227,6 +234,7 @@ you can find the PID of the parent Foilhat instance. ('tail -f /tmp/foilhat.out.
 3. Because Foilhat is accumulating the job's output for you and the job can programatically determine the PID of its parent,
 jobs wrapped by Foilhat have the benefit of making decisions based on what they've output so far. For example:
 
+```
     ###########################################
     ########## End pre-script config ##########
     ###########################################
@@ -250,6 +258,7 @@ jobs wrapped by Foilhat have the benefit of making decisions based on what they'
         files which is more than your threshold of "${WARN_AT}". The activity \
         is shown below:\n" >&2
     fi
+```
 
 Just be sure when doing something like this that you do not get in a loop where your
 job indefinitely prints responses to its own output. As before, you could also wrap a
