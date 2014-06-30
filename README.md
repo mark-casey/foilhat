@@ -169,8 +169,8 @@ you want to utilize mount_check from your binary, perl script, or etc., try usin
 your language's system call command to set the mount list and execute mount_check
 before starting work.
 
-Here is a perl example. *Note that unlike the more integrated Bash example above,
-here you must check the exit status and act accordingly*:
+Here is a perl example. Note that unlike the more integrated Bash example above,
+here you must check the exit status and act accordingly:
 
 ```
 #!/usr/bin/perl
