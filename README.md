@@ -1,5 +1,9 @@
 Foilhat, a semi-paranoid cronjob wrapper.
 
+**Warning**: By design, Foilhat gives no output whatsoever under normal
+operation. You are asking to lose cronjob log data if you fail to at
+least read the "Output Control and Logging" section below before use.
+
 ## Summary
 
 Foilhat v2.0 offers three main features for handling cron jobs, along with a
@@ -11,12 +15,6 @@ few minor extras. The main features are:
 Foilhat aims to handle these relatively simple tasks in a low maintenace,
 centralized manner and has been found to add quite a bit of power, safety,
 and flexibility to everyday job handling.
-
-## Warning/Disclaimer
-
-**Under normal operation Foilhat gives NO OUTPUT whatsoever. You are
-asking to lose data if you fail to AT LEAST read the "Output Control and Logging"
-section below before use.**
 
 
 ## General Use
@@ -49,6 +47,7 @@ lock-file generation and Foilhat will simply exit:
 Dropping the quotes and escaping instead (although technically functional) is an abomination:
 
     ./foilhat.sh touch foo\; ls -la foo \>\&2\; rm foo
+
 
 ## Output Control and Logging
 
@@ -121,6 +120,7 @@ to allow different jobs to use different settings, and jobs can be moved around 
 needed without first adding and/or removing their logging preferences in a central
 config file(s).
 
+
 ## Locking
 
 Foilhat will set a lock file for your job that is not likely to conflict with any
@@ -130,6 +130,7 @@ the mix (or to remove it), since the lock layers will be fully independent.
 Foilhat's locking functions include several checks for sanity and should not be
 susceptible to race conditions (barring considerable and intentional tampering
 from root while the job is running).
+
 
 ## Mount checking
 
@@ -187,6 +188,7 @@ here you must check the exit status and act accordingly*:
     ###########################################
     
     -start work-
+
 
 ## Other
 
