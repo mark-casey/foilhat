@@ -4,6 +4,7 @@ Foilhat, a semi-paranoid cronjob wrapper.
 operation. You are asking to lose cronjob log data if you fail to at
 least read the "Output Control and Logging" section below prior to use.
 
+
 ## Summary
 
 Foilhat v2.0 offers three main features for handling cron jobs, along with a
@@ -157,7 +158,7 @@ and exit with an error if they are not present.
     ########## End pre-script config ##########
     ###########################################
     
-    -start work-
+    # start work #
 
 Foilhat should export the mount_check function to the job's environment regardless
 of language, similar to how the FH_OUTOPTS file can be set by any language. If
@@ -187,7 +188,7 @@ here you must check the exit status and act accordingly*:
     ########## End pre-script config ##########
     ###########################################
     
-    -start work-
+    # start work #
 
 
 ## Other
@@ -217,7 +218,7 @@ immediately obvious.
         ###########################################
     fi
     
-    -start work-
+    # start work #
 
 2. Usually you can't monitor a cron job until its output is emailed to you (to tell you nothing is wrong, no doubt). Sometimes
 you just want to know how complete a job is or that it is still working. Jobs run by Foilhat can be monitored as long as
