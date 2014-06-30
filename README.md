@@ -194,20 +194,20 @@ immediately obvious.
 
     if [ $(type -t mount_check) ]
     then
-            ## Set mount points to look for
-            REQ_MOUNTS[0]="-m /mnt/bkusb500g"
-            REQ_MOUNTS[1]="-m /mnt/data -h usr@host.domain.com -p 22 -k ~/.ssh/key.key"
-            mount_check "${REQ_MOUNTS[@]}"
-            
-            ## Set output options for Foilhat to retrieve
-            FH_OUTOPTS=/tmp/foilhat.outopts.$PPID
-            echo 'OUT_TO_LOG="true"' > "${FH_OUTOPTS}"
-            echo 'OVERWRITE_LOG="false"' >> "${FH_OUTOPTS}"
-            echo 'LOGFILE="/var/log/logfile.log"' >> "${FH_OUTOPTS}"
-            
-            ###########################################
-            ########## End pre-script config ##########
-            ###########################################
+        ## Set mount points to look for
+        REQ_MOUNTS[0]="-m /mnt/bkusb500g"
+        REQ_MOUNTS[1]="-m /mnt/data -h usr@host.domain.com -p 22 -k ~/.ssh/key.key"
+        mount_check "${REQ_MOUNTS[@]}"
+        
+        ## Set output options for Foilhat to retrieve
+        FH_OUTOPTS=/tmp/foilhat.outopts.$PPID
+        echo 'OUT_TO_LOG="true"' > "${FH_OUTOPTS}"
+        echo 'OVERWRITE_LOG="false"' >> "${FH_OUTOPTS}"
+        echo 'LOGFILE="/var/log/logfile.log"' >> "${FH_OUTOPTS}"
+        
+        ###########################################
+        ########## End pre-script config ##########
+        ###########################################
     fi
     
     -start work-
