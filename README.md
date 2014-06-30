@@ -6,7 +6,7 @@ Foilhat v2.0 offers three main features for handling cron jobs, along with a
 few minor extras. The main features are:
  - Output control
  - Local and remote mount point checking
- - PID/lock fle handling.
+ - PID/lock fle handling
 
 Foilhat aims to handle these relatively simple tasks in a low maintenace,
 centralized manner and has been found to add quite a bit of power, safety,
