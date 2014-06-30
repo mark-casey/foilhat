@@ -145,7 +145,7 @@ and exit with an error if they are not present.
     set -o pipefail
     
     REQ_MOUNTS[0]="-m /mnt/bkusb500g"
-    REQ_MOUNTS[1]="-m /mnt/data -h user@host.domain.com -p 22 -k /root/.ssh/key"
+    REQ_MOUNTS[1]="-m /mnt/data -h usr@host.domain.com -p 22 -k ~/.ssh/key"
     mount_check "${REQ_MOUNTS[@]}"
     
     ###########################################
@@ -168,8 +168,8 @@ here you must check the exit status and act accordingly*:
     use warnings;
     use strict;
     
-    my @req_mounts = ( '"-m /mnt/bkusb500g"', '"-m /mnt/storage -h
-      user@host.domain.com -p 22 -k /root/.ssh/access.key"' );
+    my @req_mounts = ( '"-m /mnt/bkusb500g"',
+                       '"-m /mnt/data -h usr@host.domain.com -p 22 -k ~/.ssh/key.key"' );
     
     # (We pre-set FH_MOUNT_CHECK_CALLER, or any errors will just start
     # with --bash-- instead of --/path/script.pl--)
@@ -196,7 +196,7 @@ immediately obvious.
        then
                ## Set mount points to look for
                REQ_MOUNTS[0]="-m /mnt/bkusb500g"
-               REQ_MOUNTS[1]="-m /mnt/storage -h user@host.domain.com -p 22 -k /root/.ssh/access.key"
+               REQ_MOUNTS[1]="-m /mnt/data -h usr@host.domain.com -p 22 -k ~/.ssh/key.key"
                mount_check "${REQ_MOUNTS[@]}"
 
                ## Set output options for Foilhat to retrieve
