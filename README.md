@@ -192,57 +192,60 @@ immediately obvious.
    job to be portable you can wrap the pre-script config in a conditional
    that checks whether the mount_check function is defined, such as:
 
-       if [ $(type -t mount_check) ]
-       then
-               ## Set mount points to look for
-               REQ_MOUNTS[0]="-m /mnt/bkusb500g"
-               REQ_MOUNTS[1]="-m /mnt/data -h usr@host.domain.com -p 22 -k ~/.ssh/key.key"
-               mount_check "${REQ_MOUNTS[@]}"
-
-               ## Set output options for Foilhat to retrieve
-               FH_OUTOPTS=/tmp/foilhat.outopts.$PPID
-               echo 'OUT_TO_LOG="true"' > "${FH_OUTOPTS}"
-               echo 'OVERWRITE_LOG="false"' >> "${FH_OUTOPTS}"
-               echo 'LOGFILE="/var/log/logfile.log"' >> "${FH_OUTOPTS}"
-
-               ###########################################
-               ########## End pre-script config ##########
-               ###########################################
-       fi
-
-       -start work-
-
+    if [ $(type -t mount_check) ]
+    then
+            ## Set mount points to look for
+            REQ_MOUNTS[0]="-m /mnt/bkusb500g"
+            REQ_MOUNTS[1]="-m /mnt/data -h usr@host.domain.com -p 22 -k ~/.ssh/key.key"
+            mount_check "${REQ_MOUNTS[@]}"
+            
+            ## Set output options for Foilhat to retrieve
+            FH_OUTOPTS=/tmp/foilhat.outopts.$PPID
+            echo 'OUT_TO_LOG="true"' > "${FH_OUTOPTS}"
+            echo 'OVERWRITE_LOG="false"' >> "${FH_OUTOPTS}"
+            echo 'LOGFILE="/var/log/logfile.log"' >> "${FH_OUTOPTS}"
+            
+            ###########################################
+            ########## End pre-script config ##########
+            ###########################################
+    fi
+    
+    -start work-
 
 2. Usually you can't monitor a cron job until its output is emailed to you (to tell you nothing is wrong, no doubt). Sometimes
 you just want to know how complete a job is or that it is still working. Jobs run by Foilhat can be monitored as long as
 you can find the PID of the parent Foilhat instance. ('tail -f /tmp/foilhat.out.1234' or 'tail -f /tmp/foilhat.err.1234')
 
-
 3. Because Foilhat is accumulating the job's output for you and the job can programatically determine the PID of its parent,
 jobs wrapped by Foilhat have the benefit of making decisions based on what they've output so far. For example:
 
-       ###########################################
-       ########## End pre-script config ##########
-       ###########################################
+    ###########################################
+    ########## End pre-script config ##########
+    ###########################################
+    
+    set +e
+    rsync -av --delete data backup
+    set -e
 
-       set +e
-       rsync -av --delete data backup
-       set -e
+    # Now look at STDOUT (via Foilhat's tmp filehandle) and generate
+    # a warning if too many files have been deleted/moved.
+    FH_OUT="/tmp/foilhat.out.${PPID}"
+    
+    WARN_AT=85
+    set +e
+    DEL_COUNT=$( grep -c ^deleting "${FH_OUT}" )
+    set -e
 
-       # Now look at STDOUT (via Foilhat's tmp filehandle) and generate a warning if too many files have been deleted/moved.
-       FH_OUT="/tmp/foilhat.out.${PPID}"
+    if [ ${DEL_COUNT} -gt ${WARN_AT} ]
+    then
+    echo -e "\nWARNING: This job has deleted or moved "${DEL_COUNT}" \
+    files which is more than your threshold of "${WARN_AT}". The activity \
+    is shown below:\n" >&2
+    fi
 
-       WARN_AT=85
-       set +e
-       DEL_COUNT=$( grep -c ^deleting "${FH_OUT}" )
-       set -e
-
-       if [ ${DEL_COUNT} -gt ${WARN_AT} ]
-       then
-       echo -e "\nWARNING: This job has deleted or moved "${DEL_COUNT}" files which is more than your threshold of "${WARN_AT}". The activity is shown below:\n" >&2
-       fi
-
-Just be sure when doing something like this that you do not get in a loop where your job indefinitely prints responses to its
-own output. As before, you could also wrap a trick like this in an if statement based on whether mount_check
-is present, though there is likely a point at which the added code and clutter will cease to be worth the extra portability.
+Just be sure when doing something like this that you do not get in a loop where your
+job indefinitely prints responses to its own output. As before, you could also wrap a
+trick like this in an if statement based on whether mount_check is present, though
+there is likely a point at which the added code and clutter will cease to be worth the
+extra portability.
 
