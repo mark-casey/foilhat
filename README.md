@@ -2,12 +2,15 @@ Foilhat, a semi-paranoid cronjob wrapper.
 
 ### Summary
 
-Foilhat v2.0 offers three main features for handling cron jobs (along with a
-few minor extras). The main features are output control, local and remote
-mount checking, and PID/lock fle handling. Foilhat aims to handle these
-relatively simple tasks in a low maintenace, centralized manner and has
-been found to add quite a bit of power, safety, and flexibility to everyday
-job handling.
+Foilhat v2.0 offers three main features for handling cron jobs, along with a
+few minor extras. The main features are:
+ - Output control
+ - Local and remote mount point checking
+ - PID/lock fle handling.
+
+Foilhat aims to handle these relatively simple tasks in a low maintenace,
+centralized manner and has been found to add quite a bit of power, safety,
+and flexibility to everyday job handling.
 
 ### Warning/Disclaimer
 **Under normal operation Foilhat gives NO OUTPUT whatsoever. You are
