@@ -2,7 +2,7 @@ Foilhat, a semi-paranoid cronjob wrapper.
 
 **Warning**: By design, Foilhat gives no output whatsoever under normal
 operation. You are asking to lose cronjob log data if you fail to at
-least read the "Output Control and Logging" section below before use.
+least read the "Output Control and Logging" section below prior to use.
 
 ## Summary
 
