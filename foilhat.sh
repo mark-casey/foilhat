@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ###################################################################################
-# Copyright (c) 2012, Mark Casey
+# Copyright (c) 2012,2015, Mark Casey
 # All rights reserved.
 # 
 # Redistribution and use in source and binary forms, with or without
@@ -26,9 +26,8 @@
 ###################################################################################
 
 
-# Foilhat v2 - A semi-paranoid cron job wrapper that handles job locking/PID, improved output control, and verification of required mount points.
-# More documentation is available at the end of the script.
-
+# Foilhat v3 - A semi-paranoid cron job wrapper that handles job locking/PID, improved output control, and verification of required mount points.
+# As of v3, Foilhat requires the GNU coreutils utility "stdbuf"
 
 set -e
 set -u
@@ -36,11 +35,10 @@ set -o pipefail
 
 # Job that will be wrapped
 JOB="$1"
-FULLCMD="$@"
+FULLCMD=(${@})
 
 # Temp storage of job's output
-FH_OUT="/tmp/foilhat.out.$$"
-FH_ERR="/tmp/foilhat.err.$$"
+FH_TEMP="/tmp/foilhat.temp.$$"
 
 LCK_FILE="/tmp/$(basename ${JOB}).foilhat.lck"
 
@@ -123,16 +121,18 @@ function obtain_lock {
 
 function mount_check {
 # NOT called in foilhat.sh; exported to job's environment. Used by job to verify required mount points on this host or on remote hosts
-# See sample job scripts and documentation for use examples (should be callable from binaries too).
+# See sample job scripts and documentation for use examples (function should be callable from binaries/other script languages using their system() call too!).
 # Use is recommended, but not required
 
 INPUT=("${@}")
-ALL_FOUND='true'
+ALL_FOUND='true'  # Assume we're okay unless we find a problem
 
-# Set where errors come from (some non-bash jobs will preset this, so their own name will show)
+
 if [ -z "${FH_MOUNT_CHECK_CALLER:-}" ]
+# Set where errors come from (some non-bash jobs like perl scripts can pre-set this before calling mount_check, so their own name will show instead of just 'bash')
+# Not an issue for bash jobs, as mount_check is exported to and called by the job, using its own "basename ${0}"
 then
-	FH_MOUNT_CHECK_CALLER=$(basename ${0})
+	FH_MOUNT_CHECK_CALLER=$(basename ${0})	# Default if not otherwise set
 fi
 
 for LINE in "${INPUT[@]}"
@@ -144,10 +144,10 @@ do
 	VERBOSE=''
 	
 	OPTIND=1
-	LINE_AS_ARR=(${LINE})
+	LINE_AS_ARRAY=(${LINE})
 	
 	# Get arguments
-	while getopts ":m:h:p:k:v" opt "${LINE_AS_ARR[@]}"
+	while getopts ":m:h:p:k:v" opt "${LINE_AS_ARRAY[@]}"
 	do
 		case ${opt} in
 		m)
@@ -189,7 +189,7 @@ do
 		if [ -z "${MOUNT_NEEDED:-}" ]
 		then
 			echo >&2
-			echo "--mount_check()-- Exiting on error: mountcheck() requires at least a mount point parameter." >&2
+			echo "--mount_check()-- Exiting on error: mount_check() requires at least a mount point parameter." >&2
 			exit 1
 		fi
 	fi
@@ -291,7 +291,9 @@ obtain_lock
 
 # Run job; capture outputs and exit status
 set +e
-eval ${FULLCMD} >$FH_OUT 2>$FH_ERR
+exec > >( sed --unbuffered -e 's/^/:fh_out:/' | >$FH_TEMP )
+exec 2> >( sed --unbuffered -e 's/^/:fh_err:/' | >$FH_TEMP )
+stdbuf -oL -eL "${FULLCMD[@]}"
 RESULT=$?
 set -e
 
@@ -306,31 +308,56 @@ SECONDS=$((SECONDS % 60))
 DURATION="${DAYS} days, ${HOURS} hours, ${MINUTES} minutes, ${SECONDS} seconds"
 
 # Disable STDOUT if no failures or errors
-if [ $RESULT -eq 0 -a ! -s "$FH_ERR" ]
+if [ $RESULT -eq 0 -a "$(grep -c ':fh_err:' $FH_TEMP)" -eq 0 ]
 then
 	exec > /dev/null
 fi
 
-# Check whether the job requested output to logfile
+# Check whether the job placed an outopts file
 FH_OUTOPTS="/tmp/foilhat.outopts.$$"
 
 if [ -r "${FH_OUTOPTS}" ]
 then
 	source "${FH_OUTOPTS}"
 
+    # Foilhat v2 handling
+    if [ -n "${LOGFILE:-}" -o -n "${OUT_TO_LOG:-}" -o -n "${OVERWRITE_LOG:-}" ]
+    then
+        echo "Warning: You are using deprecated Foilhat v2 arguments with Foilhat v3, future support unlikely." >&2
+
 	if [ "${OUT_TO_LOG:-}" == 'true' -a -n "${LOGFILE:-}" ]
 	then
-		if [ "${APPEND_TO_LOG:-}" == 'false' -a "${OVERWRITE_LOG:-}" == 'true' ]
+		if [ "${OVERWRITE_LOG:-}" == 'true' ]
 		then
 			exec > >(tee "${LOGFILE}")
 		else
 			exec > >(tee -a "${LOGFILE}")
 		fi
 	fi
+
+    #Foilhat v3 handling
+	if [ -n "${REPORT_FILE:-}" ]
+	then
+		if [ "${OVERWRITE_REPORT_FILE:-}" == 'true' ]
+		then
+			exec > >(tee "${REPORT_FILE}")
+		else
+			exec > >(tee -a "${REPORT_FILE}")
+		fi
+	fi
+	if [ -n "${RAW_LOG:-}" ]
+	then
+		if [ "${OVERWRITE_RAW_LOG:-}" == 'true' ]
+		then
+			cat ${FH_TEMP} >"${RAW_LOG}"
+		else
+			cat ${FH_TEMP} >>"${RAW_LOG}"
+		fi
+	fi
 fi
 
 
-# Write output
+# Write report
 echo "Foilhat report for job:"
 echo "${FULLCMD}"
 echo
@@ -339,23 +366,16 @@ echo "Start time: ${JOB_STARTED_AT}"
 echo "End time: ${JOB_ENDED_AT}"
 echo "Duration: ${DURATION}"
 echo
-echo "STDERR:"
+echo "OUTPUT:"
 echo "-----------------"
-cat "${FH_ERR}" | sed 's/^/   /'
-echo "-----------------"
-echo
-echo
-echo "STDOUT:"
-echo "-----------------"
-cat "${FH_OUT}" | sed 's/^/   /'
+cat ${FH_TEMP} | sed -e 's/:fh_out:/    /' -e 's/:fh_err:/    /'
 echo "-----------------"
 echo
 echo "===END FOILHAT REPORT $(date)==="
 echo
 
-rm -f "${FH_OUT}"
-rm -f "${FH_ERR}"
-rm -f "${FH_OUTOPTS}" || true  # Might not exist
+rm -f ${FH_TEMP}
+rm -f ${FH_OUTOPTS} || true  # Might not exist
 
 chattr -i "${LCK_FILE}"
 rm -f "${LCK_FILE}"
