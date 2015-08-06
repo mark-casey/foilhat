@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ###################################################################################
-# Copyright (c) 2012, Mark Casey
+# Copyright (c) 2012,2015, Mark Casey
 # All rights reserved.
 # 
 # Redistribution and use in source and binary forms, with or without
@@ -123,16 +123,17 @@ function obtain_lock {
 
 function mount_check {
 # NOT called in foilhat.sh; exported to job's environment. Used by job to verify required mount points on this host or on remote hosts
-# See sample job scripts and documentation for use examples (should be callable from binaries too).
+# See sample job scripts and documentation for use examples (function *should* be callable from binaries/other script languages using their system() call too!).
 # Use is recommended, but not required
 
 INPUT=("${@}")
-ALL_FOUND='true'
+ALL_FOUND='true'  # Default to "all is well" prior to looking for problems below
 
-# Set where errors come from (some non-bash jobs will preset this, so their own name will show)
 if [ -z "${FH_MOUNT_CHECK_CALLER:-}" ]
+# Set where errors come from (some non-bash jobs like perl scripts can pre-set this before calling mount_check, so their own name will show instead of just 'bash')
+# Not an issue for bash jobs, as mount_check is exported to and called by the job, using its own "basename ${0}"
 then
-	FH_MOUNT_CHECK_CALLER=$(basename ${0})
+	FH_MOUNT_CHECK_CALLER=$(basename ${0})	# Set the default, if not otherwise set
 fi
 
 for LINE in "${INPUT[@]}"
@@ -144,10 +145,10 @@ do
 	VERBOSE=''
 	
 	OPTIND=1
-	LINE_AS_ARR=(${LINE})
+	LINE_AS_ARRAY=(${LINE})
 	
 	# Get arguments
-	while getopts ":m:h:p:k:v" opt "${LINE_AS_ARR[@]}"
+	while getopts ":m:h:p:k:v" opt "${LINE_AS_ARRAY[@]}"
 	do
 		case ${opt} in
 		m)
@@ -189,7 +190,7 @@ do
 		if [ -z "${MOUNT_NEEDED:-}" ]
 		then
 			echo >&2
-			echo "--mount_check()-- Exiting on error: mountcheck() requires at least a mount point parameter." >&2
+			echo "--mount_check()-- Exiting on error: mount_check() requires at least a mount point parameter." >&2
 			exit 1
 		fi
 	fi
@@ -311,7 +312,7 @@ then
 	exec > /dev/null
 fi
 
-# Check whether the job requested output to logfile
+# Check whether the job placed an outopts file
 FH_OUTOPTS="/tmp/foilhat.outopts.$$"
 
 if [ -r "${FH_OUTOPTS}" ]
