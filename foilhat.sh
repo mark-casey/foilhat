@@ -42,7 +42,7 @@ FULLCMD="$@"
 FH_OUT="/tmp/foilhat.out.$$"
 FH_ERR="/tmp/foilhat.err.$$"
 
-LCK_FILE="/tmp/$(basename ${JOB}).foilhat.lck"
+LCK_FILE="/tmp/$(basename ${JOB})${FH_LCK_APPEND:-}.foilhat.lck"
 
 JOB_STARTED_AT=$(date)
 
