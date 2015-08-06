@@ -27,7 +27,6 @@
 
 
 # Foilhat v2 - A semi-paranoid cron job wrapper that handles job locking/PID, improved output control, and verification of required mount points.
-# More documentation is available at the end of the script.
 
 
 set -e
