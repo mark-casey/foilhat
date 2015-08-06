@@ -320,7 +320,7 @@ then
 
 	if [ "${OUT_TO_LOG:-}" == 'true' -a -n "${LOGFILE:-}" ]
 	then
-		if [ "${APPEND_TO_LOG:-}" == 'false' -a "${OVERWRITE_LOG:-}" == 'true' ]
+		if [ "${OVERWRITE_LOG:-}" == 'true' ]
 		then
 			exec > >(tee "${LOGFILE}")
 		else

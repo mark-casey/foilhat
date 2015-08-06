@@ -110,12 +110,10 @@ echo 'LOGFILE="/var/log/logfile.log"' >> "${FH_OUTOPTS}"
 
 Once your job has completed, Foilhat will check for the existence of the FH_OUTOPTS
 file and will act as requested if it is found. The file does not have to be output by
-any certain language or method, of course. If you are wrapping a perl job or a
-custom binary or etc., you can write the file from there. Note that the log file will
-not be overwritten unless APPEND_TO_LOG is false and OVERWRITE_LOG is true; setting
-only one or the other (or neither) will result in an append to the current log. Also
-note that the FH_OUTOPTS filename should end with Foilhat's PID ($PPID), not your
-script's PID ($$).
+any certain language or method. If you are wrapping a perl job or your own binary or
+etc., you can write the file from there. Note that the log file will not be overwritten
+unless OVERWRITE_LOG is set to true. Also note that the FH_OUTOPTS filename should
+end with Foilhat's PID ($PPID), not your script's PID ($$).
 
 Logging options are set from within each job so that foilhat.sh needn't be modified
 to allow different jobs to use different settings, and jobs can be moved around as
